@@ -1,0 +1,21 @@
+cabal-version:       2.4
+name:                hcat2
+version:             0.1.0.0
+synopsis:            Simple terminal program in Haskell.
+description:         A simple terminal program, written in Haskell.
+                     For illustration purposes, really.
+homepage:            https://github.com/jtpaasch/hcat2
+license:             BSD-3-Clause
+license-file:        LICENSE
+author:              JT Paasch
+maintainer:          jt.paasch@gmail.com
+category:            System
+extra-source-files:  README.md
+
+executable hcat
+  main-is:             Main.hs
+  other-modules:       Cli.Args, Cli.Exit, Cli.Output,
+                       App.Cmd, App.Handler
+  build-depends:       base ^>=4.13.0.0, process
+  hs-source-dirs:      src
+  default-language:    Haskell2010
