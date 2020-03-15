@@ -63,6 +63,6 @@ To see the help:
 
 To clean:
 
-    cabal new-clean
+    make clean
 
 
