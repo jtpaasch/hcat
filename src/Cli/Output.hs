@@ -8,6 +8,9 @@ module Cli.Output (
 
 import Data.List (intercalate)
 
+{- For convenience/clarity. -}
+type Argument = String
+
 {- The help/usage message. -}
 usage :: String
 usage =
@@ -34,7 +37,7 @@ noArgsErr :: String
 noArgsErr = "No file paths were specified.\nSee: hcat --help"
 
 {- Message if any command line arguments are invalid options. -} 
-invalidOptsErr :: [String] -> String
+invalidOptsErr :: [Argument] -> String
 invalidOptsErr args =
      "Unrecognized option(s): "
   ++ (intercalate ", " args)

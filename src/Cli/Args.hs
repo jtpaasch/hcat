@@ -1,5 +1,8 @@
 module Cli.Args (
-    parse
+    Error (..)
+  , Config
+  , get_filepaths
+  , parse
   ) where
 
 {- This module parses arguments from the command line. -}
@@ -10,6 +13,25 @@ import qualified Cli.Output as Output
 
 {- For convenience/clarity. -}
 type Argument = String
+
+{- Explicit errors we handle. -}
+data Error =
+    Help String
+  | InvalidOpts String
+  | NoArgs String
+
+{- Raw command line args get parsed into this. -}
+data Config = Config {
+  filepaths :: [FilePath]
+}
+
+{- Constructs a 'Config' record. -}
+make_config :: [FilePath] -> Config
+make_config filepaths = Config { filepaths = filepaths }
+
+{- Get the filepaths from a 'Config' record. -}
+get_filepaths :: Config -> [FilePath]
+get_filepaths conf = filepaths conf
 
 {- Checks if a list of arguments is empty. -}
 noArgs :: [Argument] -> Bool
@@ -31,18 +53,16 @@ invalidOpts args =
   in filter isInvalid args
 
 {- Inspects a list of command line arguments.
-   If the arguments have -h or --help in them, exit with the help/usage.
-   If there are other problems, exit with an appropriate message. 
-   Otherwise, assume the arguments are fine, as a list of filepaths,
-   and return them. -}
-parse :: [Argument] -> IO [FilePath]
+   If there are errors, returns the appropriate 'Error'.
+   Otherwise, the arguments are parsed into a 'Config' record. -}
+parse :: [Argument] -> IO (Either Error Config)
 parse args =
   case noArgs args of
-    True -> Exit.exitWithErr Output.noArgsErr
+    True -> return $ Left (NoArgs Output.noArgsErr)
     False -> case containsHelp args of
-      True -> Exit.exitWithErr Output.usage
+      True -> return $ Left (Help Output.usage)
       False -> 
         let badOpts = invalidOpts args
         in case (length badOpts) > 0 of
-          True -> Exit.exitWithErr $ Output.invalidOptsErr badOpts
-          False -> return (args)
+          True -> return $ Left (InvalidOpts $ Output.invalidOptsErr badOpts)
+          False -> return $ Right (make_config args)

@@ -25,7 +25,6 @@ data Error =
   | NoFile String -- ^If a file doesn't exist.
   | NoPerm String -- ^If no permission to read a file.
   | Other String  -- ^Any other error.
-  deriving (Show)
 
 {- Check for certain IO errors. -}
 handleError :: SysIOError.IOError -> Maybe Error
